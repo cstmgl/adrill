@@ -18,11 +18,9 @@ COPY --from=builder ${APP_ROOT} ${APP_ROOT}
 
 ENV DRILL_HOME ${APP_ROOT}
 
-RUN ln -s ${DRILL_HOME}/bin/drill-embedded /usr/local/bin/drill-embedded
+ENV PATH "${DRILL_HOME}/bin:$PATH"
 
 RUN chown -R drill:drill ${DRILL_HOME}
-
-ENV PATH "${DRILL_HOME}/bin:$PATH"
 
 USER drill
 
