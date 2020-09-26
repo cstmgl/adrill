@@ -14,10 +14,18 @@ ARG APP_ROOT=/opt/drill
 
 RUN mkdir -p ${APP_ROOT} && chmod -R g+rw ${APP_ROOT}
 
-RUN chown -R drill ${APP_ROOT}
+COPY --from=builder ${APP_ROOT} ${APP_ROOT}
+
+ENV DRILL_HOME ${APP_ROOT}
+
+RUN ln -s ${DRILL_HOME}/bin/drill-embedded /usr/local/bin/drill-embedded
+
+RUN chown -R drill:drill ${DRILL_HOME}
+
+ENV PATH "${DRILL_HOME}/bin:$PATH"
 
 USER drill
 
-COPY --from=builder /opt/drill ${APP_ROOT}
+WORKDIR ${DRILL_HOME}
 
-ENTRYPOINT [ ${APP_ROOT}/drill-embebbed ]
+ENTRYPOINT [ "drill-embedded" ]
